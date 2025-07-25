@@ -1,0 +1,7 @@
+opencv-python>=4.5.0
+torch
+onnx
+onnxruntime
+opencv-python>=4.5.0
+numpy
+tqdm
