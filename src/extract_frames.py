@@ -65,3 +65,5 @@ if __name__ == "__main__":
         seq_len=5,
         stride=1
     )
+
+#update
