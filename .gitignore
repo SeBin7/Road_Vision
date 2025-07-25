@@ -2,5 +2,5 @@
 .venv/
 
 # data 내부에서 frames와 videos는 제외
-data/frames/
-data/videos/
+data/frames/*
+data/videos/*
