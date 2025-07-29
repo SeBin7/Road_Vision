@@ -15,6 +15,7 @@ from PIL import Image
 from collections import deque
 from torchvision import transforms
 
+from Mobilenet import MobileNetFeatureExtractor  # MobileNet backbone
 from CNN import CNNFeatureExtractor      # CNN backbone
 from GRU_MLP import GRU_MLP_Classifier        # GRU-MLP classifier
 
@@ -25,11 +26,13 @@ BAR_COLOR  = (  0,255,  0)   # (B,G,R) – 예측 텍스트 색
 FONT       = cv2.FONT_HERSHEY_SIMPLEX
 
 # 클래스 인덱스 → 이름
-label_map = {0: 'ice_road',
+label_map = {0: 'broken',
              1: 'normal_road',
-             2: 'wet_road'}
+             2: 'snow_road',
+             3: 'wet_road'}
+             
 
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+device = torch.device('xpu' if torch.xpu.is_available() else 'cpu')
 
 
 # ──────────────────────────── 추론 클래스 ──────────────────────────────
@@ -46,13 +49,15 @@ class VideoInference:
         ])
 
         # 모델 로드
-        self.cnn = CNNFeatureExtractor().to(device)
+        #self.cnn = CNNFeatureExtractor(feature_dim=128).to(device)
+        self.cnn = MobileNetFeatureExtractor().to(device)
         self.cls = GRU_MLP_Classifier(feature_dim=128).to(device)
         self.cnn.load_state_dict(torch.load('./best_cnn_feature_extractor.pth',
                                             map_location=device))
         self.cls.load_state_dict(torch.load('./best_gru_mlp_classifier.pth',
                                             map_location=device))
-        self.cnn.eval(); self.cls.eval()
+        self.cnn.eval()
+        self.cls.eval()
 
     # 단일 프레임 버퍼링
     def _push_frame(self, frame_bgr):
