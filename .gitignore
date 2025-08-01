@@ -1,0 +1,26 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.so
+
+# Model checkpoints
+*.pth
+*.onnx
+*.har
+*.hef
+
+# Python virtual environments
+.venv/
+env/
+venv/
+
+# Video files
+*.mp4
+*.avi
+
+# VSCode settings
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
