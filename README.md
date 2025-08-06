@@ -2,14 +2,19 @@
 
 * 차량 탑재 YOLO와 RNN 기반의 노면이상탐지시스템을 통해 결빙, 젖은 노면, crack 등의 실시간 감지 및 V2X 통신 기반 차량 간 정보공유를 통한 공공데이터 구축을 최종 목표로 설정할 수 있습니다
 
-## Use Case
+## System Flow Chart
 
-<img width="1684" height="1204" alt="image" src="https://github.com/user-attachments/assets/3a95f96b-71ab-491b-8a85-ce132c013793" />
+<img width="1143" height="439" alt="image" src="https://github.com/user-attachments/assets/b60cdc1d-6c16-4a39-ad7a-9979a04f8337" />
 
 
-## High Level Design
 
-<img width="2724" height="1284" alt="image" src="https://github.com/user-attachments/assets/e34c750a-b606-4502-b9fe-e5641502c8d6" />
+## Sequence Diagram
+
+<img width="987" height="618" alt="image" src="https://github.com/user-attachments/assets/22fef8bb-28f6-40c8-9458-ec0bc24ec377" />
+
+## Deeplearing Flow Chart
+
+<img width="504" height="780" alt="image" src="https://github.com/user-attachments/assets/74d33f0b-9fbc-4bdf-a6cf-4d2a5a638095" />
 
 
 ## Clone code
