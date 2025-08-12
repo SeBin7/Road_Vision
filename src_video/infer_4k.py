@@ -6,7 +6,7 @@ from PIL import Image
 from collections import deque
 from torchvision import transforms
 
-from Mobilenet import MobileNetFeatureExtractor
+from Mobilenet_hailo import MobileNetFeatureExtractor
 from CNN import CNNFeatureExtractor
 from GRU_MLP_xpu import GRU_MLP_Classifier_XPU as GRU
 
@@ -43,11 +43,13 @@ class VideoInference:
         ])
         self.cnn = MobileNetFeatureExtractor().to(device)
         self.cls = GRU(feature_dim=128).to(device)
+        
         self.cnn.load_state_dict(torch.load('./best_cnn_feature_extractor.pth',
                                             map_location=device))
         self.cls.load_state_dict(torch.load('./best_gru_mlp_classifier.pth',
                                             map_location=device))
-        self.cnn.eval(); self.cls.eval()
+        self.cnn.eval()
+        self.cls.eval()
 
     def _push_frame(self, frame_bgr):
         rgb = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2RGB)

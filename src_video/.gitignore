@@ -1,5 +1,7 @@
 # 가상환경 제외
-.venv/
+.venv_xpu/
+venv_xpu
+
 
 #pycache 
 __pycache__/*
@@ -11,3 +13,15 @@ data/videos/*
 
 #영상 제외
 *.mp4
+server/*.mp4
+test/*.mp4
+
+# .npz 
+npz_sequences/*
+npz_sequences/*.npz
+
+#calibration_dataset
+calibration_dataset/normal_road/*.jpg
+calibration_dataset/snow_road/*.jpg
+calibration_dataset/wet_road/*.jpg
+

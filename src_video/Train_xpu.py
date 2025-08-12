@@ -6,7 +6,8 @@ from torchvision import transforms
 from Dataset import WindowedDataset  # 사용자 정의 데이터셋
 #from CNN import CNNFeatureExtractor  # CNN 백본
 from GRU_MLP_xpu import GRU_MLP_Classifier_XPU as GRU  # RNN+MLP 분류기
-from Mobilenet import MobileNetFeatureExtractor  # MobileNet 백본
+from Mobilenet_hailo import MobileNetFeatureExtractor  # MobileNet 백본
+
 import os, glob
 
 import intel_extension_for_pytorch as ipex
@@ -64,12 +65,9 @@ def train():
     transform = transforms.Compose([
         transforms.Resize((224, 224)),  # 이미지를 224x224로 크기 통일
         transforms.RandomHorizontalFlip(p=0.5),
-        #transforms.RandomRotation(degrees=15),  # -15~+15도 내에서 랜덤 회전(카메라 각도 다양화)
         transforms.ColorJitter(brightness=0.3, contrast=0.3, saturation=0.3, hue=0.1),  # 밝기/대비/채도/색조 랜덤 변화(조명 변화 대응)
-        #transforms.RandomAffine(degrees=10, translate=(0.1, 0.1), scale=(0.9, 1.1)),  # 약간의 이동, 확대/축소, 회전(시점 다양화)
         #transforms.GaussianBlur(kernel_size=3, sigma=(0.1,2.0)),  # 랜덤 블러(흐릿한 상황 대응)
         transforms.ToTensor(),  # 이미지를 [0,1] 범위의 텐서로 변환
-        #transforms.RandomErasing(p=0.3),  # 30% 확률로 이미지 일부를 랜덤하게 지움(가려짐, 노이즈 대응)
         transforms.Normalize(mean=[0.485, 0.456, 0.406],
                             std=[0.229, 0.224, 0.225])  # 픽셀값을 ImageNet 통계로 정규화(모델 안정화)
     ])
@@ -80,7 +78,7 @@ def train():
         seq_len=5,         # 하나의 시퀀스를 구성할 프레임 개수 (8장 연속)
         stride=3,          # 슬라이딩 윈도우 간격 (ex. 4프레임 단위로 이동 → 중복 적고 효율적)
         transform=transform,     # 각 프레임에 적용할 전처리(Resize, Normalize 등)
-        class_map=label_map      # {'wet_road': 0, 'normal_road': 1, 'snow_road': 2, ...} 등
+        class_map=label_map      # {0: 'broken', 1: 'normal_road', 2: 'snow_road', 3: 'wet_road'} 등
     )
 
     # ▶ PyTorch DataLoader 설정: 학습을 위한 배치 구성 및 병렬 로딩
@@ -112,7 +110,8 @@ def train():
     counter = 0
 
     for epoch in range(5):
-        cnn.train()
+        cnn.train() 
+        #학습 성능 향상
         cnn, optimizer = ipex.optimize(
              model=cnn,
              optimizer=optimizer,
@@ -137,7 +136,7 @@ def train():
             windows = windows.view(b * win, c, h, w).to(device)
             labels = labels.to(device)
 
-            features = cnn(windows, flatten=True)
+            features = cnn(windows)
             features = features.view(b, win, -1)
             outputs = classifier(features)
 
@@ -163,6 +162,26 @@ def train():
             counter = 0
             torch.save(cnn.state_dict(), "best_cnn_feature_extractor.pth")
             torch.save(classifier.state_dict(), "best_gru_mlp_classifier.pth")
+            print("Saved state_dict (.pth)")
+            torch.save(cnn, "best_cnn_feature_extractor.pt")
+            torch.save(classifier, "best_gru_mlp_classifier.pt")
+            print("Saved full model (.pt)")
+
+            # CNN만 ONNX로 export (Hailo-8용)
+            cnn.eval()
+            dummy_cnn_input = torch.randn(1, 3, 224, 224).to(device)
+
+            torch.onnx.export(
+                cnn,
+                dummy_cnn_input,
+                "cnn_feature_extractor_mobilenetv3.onnx",
+                input_names=["input"],
+                output_names=["feature"],
+                opset_version=11
+            )
+
+            print("✅ CNN 모델을 ONNX 형식으로 저장 완료 (cnn_feature_extractor_mobilenetv3.onnx)")
+
         else:
             counter += 1
             print(f"😕 정확도 개선 없음 (카운트 {counter}/{patience})")
@@ -173,4 +192,5 @@ def train():
 if __name__ == "__main__":
     import torch.multiprocessing as mp
     mp.set_start_method("spawn", force=True)
+    #mp.set_start_method("fork", force=True)
     train()

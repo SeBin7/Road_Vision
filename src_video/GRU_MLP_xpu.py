@@ -14,10 +14,10 @@ class GRUCellXPU(nn.Module):
     - input_size  : CNN 등에서 들어오는 feature 차원
     - hidden_size : 내부 hidden 차원
     """
-    def __init__(self, input_size: int, hidden_size: int):
+    def __init__(self, input_size: int, hidden_size: int, dropout_p: float = 0.0):
         super().__init__()
         self.hidden_size = hidden_size
-
+    
         # 입력→게이트 선형 변환 3개
         self.x2z = nn.Linear(input_size,  hidden_size, bias=True)
         self.x2r = nn.Linear(input_size,  hidden_size, bias=True)
@@ -27,6 +27,9 @@ class GRUCellXPU(nn.Module):
         self.h2z = nn.Linear(hidden_size, hidden_size, bias=False)
         self.h2r = nn.Linear(hidden_size, hidden_size, bias=False)
         self.h2n = nn.Linear(hidden_size, hidden_size, bias=False)
+
+        # 드롭아웃 레이어
+        self.dropout = nn.Dropout(p=dropout_p)
 
         # Xavier 초기화 (원 코드와 동일)
         for m in self.modules():
@@ -60,9 +63,9 @@ class GRUBlockXPU(nn.Module):
     nn.GRU와 동일한 인터페이스 중 (output, h_n) 반환.
     - batch_first=True 전용 · 단방향 · num_layers=1 기본
     """
-    def __init__(self, input_size: int, hidden_size: int):
+    def __init__(self, input_size: int, hidden_size: int, dropout_p: float = 0.0):
         super().__init__()
-        self.cell = GRUCellXPU(input_size, hidden_size)
+        self.cell = GRUCellXPU(input_size, hidden_size, dropout_p)
 
     def forward(
         self,
@@ -102,15 +105,24 @@ class GRU_MLP_Classifier_XPU(nn.Module):
         feature_dim: int = 128,
         hidden_dim : int = 64,
         num_layers : int = 1,
-        num_classes: int = 4
+        num_classes: int = 4,
+        dropout_input: float = 0.2,
+        dropout_gru: float = 0.3,
+        dropout_mlp: float = 0.2
     ):
         super().__init__()
         if num_layers != 1:
             raise NotImplementedError("현재 예시는 num_layers = 1만 지원합니다.")
-        self.gru = GRUBlockXPU(feature_dim, hidden_dim)   # ← custom GRU
+        # 입력 시퀀스 드롭아웃
+        self.input_dropout = nn.Dropout(p=dropout_input)
+        # GRU 블록 (은닉 상태 드롭아웃 포함)
+        self.gru = GRUBlockXPU(feature_dim, hidden_dim, dropout_p=dropout_gru)
+
+        # self.gru = GRUBlockXPU(feature_dim, hidden_dim)   # ← custom GRU
         self.classifier = nn.Sequential(
             nn.Linear(hidden_dim, 64),
-            nn.ReLU(),
+            nn.ReLU(inplace=True),
+            nn.Dropout(p=dropout_mlp),
             nn.Linear(64, num_classes)
         )
 
@@ -125,6 +137,9 @@ class GRU_MLP_Classifier_XPU(nn.Module):
         Args : x (batch, seq_len, feature_dim)
         Returns: logits (batch, num_classes)
         """
+        # 1) 입력 드롭아웃
+        x = self.input_dropout(x)
+        # 2) GRU 순전파
         _, h_n = self.gru(x)          # h_n (1,batch,H)
         logits = self.classifier(h_n[-1])
         return logits

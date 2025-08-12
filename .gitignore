@@ -10,3 +10,13 @@ data/videos/*
 
 #영상 제외
 *.mp4
+
+
+Train_3ch_Carla/normal_road/*.mp4
+Train_3ch_Carla/wet_road/*.mp4
+
+Train_videos/broken/*.mp4
+Train_videos/normal_road/*.mp4
+Train_videos/snow_road/*.mp4
+Train_videos/wet_road/*.mp4
+
