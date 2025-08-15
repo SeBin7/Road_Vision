@@ -9,13 +9,18 @@ CARLA 시뮬레이터와 연동하여 결과를 시각화하고, 엣지–서버
 ## 🧭 System Flow
 
 - System Flow Chart  
-  <img width="1143" height="439" alt="System Flow" src="https://github.com/user-attachments/assets/b60cdc1d-6c16-4a39-ad7a-9979a04f8337" />
+  <img width="1681" height="779" alt="System Flow" src="https://github.com/user-attachments/assets/8d09a11b-3b33-4c25-aeb3-4721b45c68a8" />
+
+
 
 - Sequence Diagram  
   <img width="987" height="618" alt="Sequence Diagram" src="https://github.com/user-attachments/assets/22fef8bb-28f6-40c8-9458-ec0bc24ec377" />
 
-- Deep Learning Flow  
-  <img width="504" height="780" alt="Deep Learning Flow" src="https://github.com/user-attachments/assets/74d33f0b-9fbc-4bdf-a6cf-4d2a5a638095" />
+
+
+- Deep Learning Flow    
+  <img width="1888" height="1133" alt="Deep Learning Flow" src="https://github.com/user-attachments/assets/7f474819-e9c4-4380-b2dc-ce8909b982d3" />
+
 
 ---
 
