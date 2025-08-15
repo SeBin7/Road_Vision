@@ -28,10 +28,10 @@ CARLA 시뮬레이터와 연동하여 결과를 시각화하고, 엣지–서버
 
 ```plaintext
 ROAD_VISION/
-├── data/                        # (로컬) 데이터셋/샘플
+├── data/                        # 데이터셋/샘플
 ├── demo/                        # 데모 스크립트/예제
 ├── doc/                         # 문서/다이어그램/보고서
-├── models/                      # 체크포인트(.pth/.onnx 등) - Git에 미추적 권장
+├── models/                      # 체크포인트(.pth/.onnx 등) 
 ├── src/
 │   ├── calibration/             # Hailo-8/모델 캘리브레이션
 │   ├── datasets/                # 데이터셋/전처리 모듈
