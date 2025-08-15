@@ -1,8 +1,9 @@
-# 🚗 Road_Vision
+## 🚗 Road_Vision
 
 자율주행 환경에서 노면 상태(파손/정상/젖은/결빙)를 **실시간**으로 탐지·분류하는 딥러닝 시스템입니다.  
 엣지(Raspberry Pi + Hailo-8)에서 **경량 CNN**으로 피처를 추출하고, 서버에서 **GRU 기반 시계열 분류**를 수행합니다.  
 CARLA 시뮬레이터와 연동하여 결과를 시각화하고, 엣지–서버 분산 구조로 실시간성과 효율성을 확보했습니다.
+
 
 ---
 
@@ -76,6 +77,7 @@ train_data_dir: "./data/train"
 val_data_dir: "./data/val"
 cnn_weight: "./models/best_cnn.pth"
 cls_weight: "./models/best_gru.pth"
+```
 
 ## 🏋️ Training (예시)
 
