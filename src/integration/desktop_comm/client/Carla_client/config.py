@@ -15,11 +15,11 @@ NUM_CLASSES = 2
 
 # 모델/서버/엔드포인트 정보
 MODEL_PATH = './gru_mlp_classifier_3ch_carla.pth'
-SERVER_URL = 'http://192.168.48.123:6000/infer'
-EDGE_URL = "http://192.168.48.123:5000"
+SERVER_URL = 'http://0.0.0.0:6000/infer'
+EDGE_URL = "http://0.0.0.0:5000"
 
 # CARLA 연결 정보
-CARLA_HOST = '192.168.48.120'
+CARLA_HOST = '0.0.0.0'
 CARLA_PORT = 2000
 WORLD_NAME = 'Town03'
 
