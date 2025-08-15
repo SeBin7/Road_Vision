@@ -5,7 +5,7 @@ def get_config():
     """프로젝트의 모든 설정을 담은 딕셔너리를 반환합니다."""
     return {
         # ── 서버 및 모델 설정 ──────────────────────────────────
-        "SERVER_URL": "http://192.168.100.147:5000/batch_extract_features_real_4ch",
+        "SERVER_URL": "http://0.0.0.0:5000/batch_extract_features_real_4ch",
         "CLS_WEIGHT": "./gru_mlp_classifier_4ch_val.pth",
         "LABEL_MAP": {0: 'broken', 1: 'normal_road', 2: 'snow_road', 3: 'wet_road'},
 
