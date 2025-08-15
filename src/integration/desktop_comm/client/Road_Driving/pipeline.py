@@ -12,7 +12,7 @@ from collections import deque
 import torch
 import torch.nn.functional as F
 
-from GRU_MLP_xpu import GRU_MLP_Classifier_XPU as GRU
+from models.GRU_MLP_xpu import GRU_MLP_Classifier_XPU as GRU
 from ui_utils import draw_info_panel, draw_prob_bars
 
 class RoadVisionPipeline:

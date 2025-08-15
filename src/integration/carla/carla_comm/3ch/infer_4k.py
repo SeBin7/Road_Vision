@@ -6,9 +6,9 @@ from PIL import Image
 from collections import deque
 from torchvision import transforms
 
-from Mobilenet_hailo_3ch import MobileNetFeatureExtractor
+from models.Mobilenet_hailo_3ch import MobileNetFeatureExtractor
 #from CNN import CNNFeatureExtractor
-from GRU_MLP_xpu import GRU_MLP_Classifier_XPU as GRU
+from models.GRU_MLP_xpu import GRU_MLP_Classifier_XPU as GRU
 
 import torch, intel_extension_for_pytorch as ipex
 

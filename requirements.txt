@@ -14,7 +14,7 @@ intel-opencl-rt==2025.0.4
 intel-openmp==2025.0.4
 intel-pti==0.10.1
 intel-sycl-rt==2025.0.4
-intel_extension_for_pytorch==2.8.0+xpu
+intel_extension_for_pytorch==2.7.10+xpu
 Jinja2==3.1.6
 joblib==1.5.1
 kiwisolver==1.4.8

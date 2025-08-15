@@ -14,9 +14,9 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from torch.utils.tensorboard import SummaryWriter
 
-from Dataset_5ch import WindowedDataset
-from Mobilenet_5ch import MobileNetFeatureExtractor
-from GRU_MLP_xpu import GRU_MLP_Classifier_XPU
+from datasets.Dataset_5ch import WindowedDataset
+from models.Mobilenet_5ch import MobileNetFeatureExtractor
+from models.GRU_MLP_xpu import GRU_MLP_Classifier_XPU
 
 device = torch.device("xpu" if torch.xpu.is_available() else "cpu")
 print(f"✅ Using device: {device}")

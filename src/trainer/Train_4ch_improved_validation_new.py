@@ -17,9 +17,9 @@ from torchvision.transforms import functional as F
 
 import intel_extension_for_pytorch as ipex
 
-from Dataset_4ch_aug      import WindowedDataset
-from Mobilenet_hailo_4ch  import MobileNetFeatureExtractor
-from GRU_MLP_xpu          import GRU_MLP_Classifier_XPU as GRU
+from datasets.Dataset_4ch_aug import WindowedDataset
+from models.Mobilenet_hailo_4ch import MobileNetFeatureExtractor
+from models.GRU_MLP_xpu import GRU_MLP_Classifier_XPU as GRU
 
 from sklearn.metrics import classification_report, confusion_matrix
 

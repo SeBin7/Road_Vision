@@ -3,10 +3,10 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, WeightedRandomSampler
 from torchvision import transforms
-from Dataset_3ch_aug import WindowedDataset  # 사용자 정의 데이터셋
+from datasets.Dataset_3ch_aug import WindowedDataset  # 사용자 정의 데이터셋
 #from CNN import CNNFeatureExtractor  # CNN 백본
-from GRU_MLP_xpu import GRU_MLP_Classifier_XPU as GRU  # RNN+MLP 분류기
-from Mobilenet_hailo_3ch import MobileNetFeatureExtractor  # MobileNet 백본
+from models.GRU_MLP_xpu import GRU_MLP_Classifier_XPU as GRU  # RNN+MLP 분류기
+from models.Mobilenet_hailo_3ch import MobileNetFeatureExtractor  # MobileNet 백본
 
 from collections import Counter
 from torchvision.transforms import functional as F

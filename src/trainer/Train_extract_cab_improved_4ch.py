@@ -10,9 +10,9 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 from torchvision import transforms
 
-from Dataset_4ch import WindowedDataset              # 수정된 4채널 Dataset
-from Mobilenet_hailo_4ch import MobileNetFeatureExtractor  # 4채널 CNN
-from GRU_MLP_xpu import GRU_MLP_Classifier_XPU as GRU
+from datasets.Dataset_4ch import WindowedDataset              # 수정된 4채널 Dataset
+from models.Mobilenet_hailo_4ch import MobileNetFeatureExtractor  # 4채널 CNN
+from models.GRU_MLP_xpu import GRU_MLP_Classifier_XPU as GRU
 
 import intel_extension_for_pytorch as ipex
 

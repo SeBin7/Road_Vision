@@ -20,3 +20,14 @@ Train_videos/normal_road/*.mp4
 Train_videos/snow_road/*.mp4
 Train_videos/wet_road/*.mp4
 
+
+# local only
+.venv/
+data/
+demo/
+__pycache__/
+*.mp4
+*.avi
+*.mkv
+*.pth
+*.onnx

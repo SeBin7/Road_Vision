@@ -7,8 +7,8 @@ import torch.nn.functional as F
 from collections import deque
 from torchvision import transforms
 from PIL import Image
-from Mobilenet_5ch import MobileNetFeatureExtractor
-from GRU_MLP_xpu import GRU_MLP_Classifier_XPU
+from models.Mobilenet_5ch import MobileNetFeatureExtractor
+from models.GRU_MLP_xpu import GRU_MLP_Classifier_XPU
 #from Dataset_5ch import compute_reflection_map, compute_edge_map
 
 # ────────────────────────────── 설정 ──────────────────────────────

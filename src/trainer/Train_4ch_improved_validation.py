@@ -15,9 +15,9 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.transforms import functional as F
 
-from Dataset_4ch_aug import WindowedDataset
-from Mobilenet_hailo_4ch import MobileNetFeatureExtractor #Mobilenetv3-small의 백본 초기 가중치 사용
-from GRU_MLP_xpu import GRU_MLP_Classifier_XPU as GRU #dropout 20% 반영
+from datasets.Dataset_4ch_aug import WindowedDataset
+from models.Mobilenet_hailo_4ch import MobileNetFeatureExtractor #Mobilenetv3-small의 백본 초기 가중치 사용
+from models.GRU_MLP_xpu import GRU_MLP_Classifier_XPU as GRU #dropout 20% 반영
 
 import intel_extension_for_pytorch as ipex
 

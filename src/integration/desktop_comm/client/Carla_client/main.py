@@ -8,7 +8,7 @@ from queue import Queue, Empty, Full
 import pygame
 import torch
 import carla
-import GRU_MLP_xpu
+from models import GRU_MLP_xpu
 
 from config import (
     WIDTH, HEIGHT, FULLSCREEN_WIDTH, FULLSCREEN_HEIGHT, FPS, SEQ_LEN,

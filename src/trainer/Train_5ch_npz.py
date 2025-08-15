@@ -8,9 +8,9 @@ from torch.utils.tensorboard import SummaryWriter
 from torch.utils.data.dataloader import default_collate
 from torchvision.utils import make_grid
 
-from Dataset_5ch_npz import WindowedDataset, GroupedClassSampler
-from Mobilenet_5ch_npz import MobileNetFeatureExtractor
-from GRU_MLP_xpu import GRU_MLP_Classifier_XPU
+from datasets.Dataset_5ch_npz import WindowedDataset, GroupedClassSampler
+from models.Mobilenet_5ch_npz import MobileNetFeatureExtractor
+from models.GRU_MLP_xpu import GRU_MLP_Classifier_XPU
 
 def safe_collate(batch):
     batch = [b for b in batch if b is not None]

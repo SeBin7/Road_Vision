@@ -5,8 +5,8 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 from Dataset import WindowedDataset  # 사용자 정의 데이터셋
 #from CNN import CNNFeatureExtractor  # CNN 백본
-from GRU_MLP_xpu import GRU_MLP_Classifier_XPU as GRU  # RNN+MLP 분류기
-from Mobilenet_hailo import MobileNetFeatureExtractor  # MobileNet 백본
+from models.GRU_MLP_xpu import GRU_MLP_Classifier_XPU as GRU  # RNN+MLP 분류기
+from models.Mobilenet_hailo_4ch import MobileNetFeatureExtractor  # MobileNet 백본
 
 import os, glob
 

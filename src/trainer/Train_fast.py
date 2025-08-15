@@ -4,8 +4,8 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from Dataset import WindowedDataset  # 사용자 정의 데이터셋
-from CNN import CNNFeatureExtractor  # CNN 백본
-from GRU_MLP import GRU_MLP_Classifier  # RNN+MLP 분류기
+from models.CNN import CNNFeatureExtractor  # CNN 백본
+from models.GRU_MLP_xpu import GRU_MLP_Classifier_XPU  # RNN+MLP 분류기
 from Mobilenet import MobileNetFeatureExtractor  # MobileNet 백본
 import os, glob
 
@@ -84,7 +84,7 @@ def train():
     # 모델 초기화 (CNN 백본 + GRU-MLP 분류기)
     #cnn = CNNFeatureExtractor(feature_dim=128).to(device)  # 이미지 특징 추출 CNN
     cnn = MobileNetFeatureExtractor(feature_dim=128).to(device)  # MobileNet 백본 활용
-    classifier = GRU_MLP_Classifier(feature_dim=128, hidden_dim=64, num_classes=len(class_names)).to(device)  # 시퀀스 분류기
+    classifier = GRU_MLP_Classifier_XPU(feature_dim=128, hidden_dim=64, num_classes=len(class_names)).to(device)  # 시퀀스 분류기
 
     # 손실 함수 및 옵티마이저
     criterion = nn.CrossEntropyLoss()  # 다중 클래스 분류용 손실 함수

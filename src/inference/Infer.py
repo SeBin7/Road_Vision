@@ -16,8 +16,8 @@ from collections import deque
 from torchvision import transforms
 
 from Mobilenet import MobileNetFeatureExtractor  # MobileNet backbone
-from CNN import CNNFeatureExtractor      # CNN backbone
-from GRU_MLP import GRU_MLP_Classifier        # GRU-MLP classifier
+from models.CNN import CNNFeatureExtractor      # CNN backbone
+from models.GRU_MLP_xpu import GRU_MLP_Classifier_XPU        # GRU-MLP classifier
 
 # ──────────────────────────── 하이퍼파라미터 ────────────────────────────
 SEQ_LEN = 10                 # 슬라이딩 윈도우 길이
@@ -51,7 +51,7 @@ class VideoInference:
         # 모델 로드
         #self.cnn = CNNFeatureExtractor(feature_dim=128).to(device)
         self.cnn = MobileNetFeatureExtractor().to(device)
-        self.cls = GRU_MLP_Classifier(feature_dim=128).to(device)
+        self.cls = GRU_MLP_Classifier_XPU(feature_dim=128).to(device)
         self.cnn.load_state_dict(torch.load('./best_cnn_feature_extractor.pth',
                                             map_location=device))
         self.cls.load_state_dict(torch.load('./best_gru_mlp_classifier.pth',
