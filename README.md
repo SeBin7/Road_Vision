@@ -1,4 +1,4 @@
-## 🚗 Road_Vision
+## Road_Vision
 
 자율주행 환경에서 노면 상태(파손/정상/젖은/결빙)를 **실시간**으로 탐지·분류하는 딥러닝 시스템입니다.  
 엣지(Raspberry Pi + Hailo-8)에서 **경량 CNN**으로 피처를 추출하고, 서버에서 **GRU 기반 시계열 분류**를 수행합니다.  
@@ -7,7 +7,7 @@ CARLA 시뮬레이터와 연동하여 결과를 시각화하고, 엣지–서버
 
 ---
 
-## 🧭 System Flow
+## System Flow
 
 - System Flow Chart  
   <img width="1681" height="779" alt="System Flow" src="https://github.com/user-attachments/assets/8d09a11b-3b33-4c25-aeb3-4721b45c68a8" />
@@ -25,7 +25,7 @@ CARLA 시뮬레이터와 연동하여 결과를 시각화하고, 엣지–서버
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```plaintext
 ROAD_VISION/
@@ -50,7 +50,7 @@ ROAD_VISION/
 
 ---
 
-## ⚙️ Quick Start
+##  Quick Start
 
 ### 1) 환경 세팅 (권장: 가상환경)
 ```bash
@@ -79,7 +79,7 @@ cnn_weight: "./models/best_cnn.pth"
 cls_weight: "./models/best_gru.pth"
 ```
 
-## 🏋️ Training (예시)
+## Training (예시)
 
 아래 스크립트와 모듈명은 실제 사용 파일에 맞게 변경 가능합니다.
 
@@ -93,7 +93,7 @@ python src/trainer/Train_5ch_npz.py \
   --config config.yaml
 ```
 
-## 🔎 Inference (예시)
+## Inference (예시)
 
 ```bash
 # 4채널 추론
@@ -105,7 +105,7 @@ python src/inference/Infer_ch5_npz.py \
   --config config.yaml --npy ./data/sample.npy
 ```
 
-## 🧩 Integration / Demo
+## Integration / Demo
 
 ### 1. CARLA 연동 추론
 ```bash
@@ -113,7 +113,7 @@ python src/integration/carla/carla_comm/4ch_carla/infer_4ch.py \
   --config config.yaml
 ```
 
-### 2. 🖥 Desktop 통신 모드
+### 2. Desktop 통신 모드
 
 **서버 실행**
 ```bash
@@ -133,7 +133,7 @@ python src/integration/desktop_comm/client/app.py \
 
 ---
 
-## 3. 📸 Output (샘플)
+## 3. Output (샘플)
 
 <img width="1653" height="1002" alt="output-1" src="https://github.com/user-attachments/assets/cf7c82c0-7f98-411e-acf9-59f45451d6df" />
 <img width="1371" height="862" alt="output-2" src="https://github.com/user-attachments/assets/1f1b2190-393e-4804-95ed-3b60e9238428" />
