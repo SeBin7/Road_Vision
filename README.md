@@ -4,6 +4,7 @@
 엣지(Raspberry Pi + Hailo-8)에서 **경량 CNN**으로 피처를 추출하고, 서버에서 **GRU 기반 시계열 분류**를 수행합니다.  
 CARLA 시뮬레이터와 연동하여 결과를 시각화하고, 엣지–서버 분산 구조로 실시간성과 효율성을 확보했습니다.
 
+
 이 레포는 다음 실행 경로를 제공합니다.
 - 로컬 추론(Python): `src/inference/`
 - 분산 추론(Hailo-8 + 로컬 GRU): `src/integration/desktop_comm/`
@@ -109,5 +110,8 @@ C++ 빌드/실행/환경변수/최적화 상세는 `cpp/README.md` 참고.
 
 ## Output
 
-<img width="1653" height="1002" alt="output-1" src="https://github.com/user-attachments/assets/cf7c82c0-7f98-411e-acf9-59f45451d6df" />
-<img width="1371" height="862" alt="output-2" src="https://github.com/user-attachments/assets/1f1b2190-393e-4804-95ed-3b60e9238428" />
+<img width="1260" height="780" alt="output-1" src="https://github.com/user-attachments/assets/cf7c82c0-7f98-411e-acf9-59f45451d6df" />
+<img width="1260" height="780" alt="output-2" src="https://github.com/user-attachments/assets/1f1b2190-393e-4804-95ed-3b60e9238428" />
+<img width="1260" height="780" alt="output-1" src="https://github.com/user-attachments/assets/da299684-4d95-42ec-86ac-e8cb600ddddc" />
+<img width="1260" height="780" alt="output-1" src="https://github.com/user-attachments/assets/5f71adb6-39ca-4f51-9684-898632d4495b" />
+
