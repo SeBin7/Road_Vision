@@ -4,7 +4,14 @@
 import os, cv2, glob, time, torch, torch.nn.functional as F
 from PIL import Image
 from collections import deque
+from pathlib import Path
+import sys
 from torchvision import transforms
+
+# Ensure project src/ is on sys.path so `models` can be imported when run as a script
+SRC_ROOT = Path(__file__).resolve().parents[1]
+if str(SRC_ROOT) not in sys.path:
+    sys.path.insert(0, str(SRC_ROOT))
 
 from models.Mobilenet_hailo_4ch import MobileNetFeatureExtractor
 from models.GRU_MLP_xpu import GRU_MLP_Classifier_XPU as GRU

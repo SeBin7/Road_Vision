@@ -81,9 +81,21 @@ class GRUBlockXPU(nn.Module):
         else:
             h_t = h0
 
+        # Fast path for seq_len==1 (common in TorchScript export):
+        # avoid slice/select ops which can be unstable on some XPU TS backends.
+        if seq_len == 1:
+            x_t = x.squeeze(1).contiguous()
+            h_t = self.cell(x_t, h_t)
+            y = h_t.unsqueeze(1)          # (batch,1,H)
+            h_n = h_t.unsqueeze(0)        # (1,batch,H)
+            return y, h_n
+
         outputs = []
         for t in range(seq_len):
-            h_t = self.cell(x[:, t, :], h_t)
+            # Some XPU TorchScript backends may lower slicing ops to CPU.
+            # Force each step back to the original device (no-op if already on XPU).
+            x_t = x[:, t, :].contiguous().to(device)
+            h_t = self.cell(x_t, h_t)
             outputs.append(h_t.unsqueeze(1))        # (batch,1,H)
 
         y = torch.cat(outputs, dim=1)               # (batch,seq_len,H)
@@ -121,7 +133,7 @@ class GRU_MLP_Classifier_XPU(nn.Module):
         # self.gru = GRUBlockXPU(feature_dim, hidden_dim)   # ← custom GRU
         self.classifier = nn.Sequential(
             nn.Linear(hidden_dim, 64),
-            nn.ReLU(inplace=True),
+            nn.ReLU(inplace=False),
             nn.Dropout(p=dropout_mlp),
             nn.Linear(64, num_classes)
         )

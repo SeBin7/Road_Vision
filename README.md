@@ -4,6 +4,11 @@
 엣지(Raspberry Pi + Hailo-8)에서 **경량 CNN**으로 피처를 추출하고, 서버에서 **GRU 기반 시계열 분류**를 수행합니다.  
 CARLA 시뮬레이터와 연동하여 결과를 시각화하고, 엣지–서버 분산 구조로 실시간성과 효율성을 확보했습니다.
 
+이 레포는 다음 실행 경로를 제공합니다.
+- 로컬 추론(Python): `src/inference/`
+- 분산 추론(Hailo-8 + 로컬 GRU): `src/integration/desktop_comm/`
+- CARLA 연동: `src/integration/carla/`, `src/integration/desktop_comm/client/Carla_client/`
+- C++/LibTorch 추론(최적화): `cpp/`
 
 ---
 
@@ -12,16 +17,11 @@ CARLA 시뮬레이터와 연동하여 결과를 시각화하고, 엣지–서버
 - System Flow Chart  
   <img width="1681" height="779" alt="System Flow" src="https://github.com/user-attachments/assets/8d09a11b-3b33-4c25-aeb3-4721b45c68a8" />
 
-
-
 - Sequence Diagram  
   <img width="987" height="618" alt="Sequence Diagram" src="https://github.com/user-attachments/assets/22fef8bb-28f6-40c8-9458-ec0bc24ec377" />
 
-
-
 - Deep Learning Flow    
   <img width="1888" height="1133" alt="Deep Learning Flow" src="https://github.com/user-attachments/assets/7f474819-e9c4-4380-b2dc-ce8909b982d3" />
-
 
 ---
 
@@ -29,111 +29,85 @@ CARLA 시뮬레이터와 연동하여 결과를 시각화하고, 엣지–서버
 
 ```plaintext
 ROAD_VISION/
+├── cpp/                         # C++/LibTorch 추론(빌드/실행 스크립트 포함)
 ├── data/                        # (로컬) 데이터셋/샘플
 ├── demo/                        # 데모 스크립트/예제
 ├── doc/                         # 문서/다이어그램/보고서
 ├── models/                      # 체크포인트(.pth/.onnx 등)
+│   ├── torchscript/             # C++ 추론용 TorchScript(.pt) 산출물
 ├── src/
-│   ├── calibration/             # Hailo-8/모델 캘리브레이션
-│   ├── datasets/                # 데이터셋/전처리 모듈
-│   ├── inference/               # 추론 엔진/시각화
-│   ├── integration/             # CARLA/데스크톱 통신 등 통합 코드
+│   ├── inference/               # Python 추론/시각화
+│   ├── integration/             # CARLA/데스크톱 통신(분산 추론) 등 통합 코드
 │   ├── models/                  # CNN/GRU/MLP 등 모델 정의
-│   ├── tools/                   # 변환/util/비디오 처리
-│   ├── trainer/                 # 학습 루프/평가/메트릭
-│   └── vis/                     # Grad-CAM 등 시각화
-├── config.yaml                  # 공통 설정 (경로/하이퍼파라미터)
-├── requirements.txt             # 기본 의존성
-├── requirements_xpu.txt         # Intel XPU 환경용(옵션)
+│   └── trainer/                 # 학습/평가
+├── requirements.txt
+├── requirements_xpu.txt
 └── README.md
 ```
 
 ---
 
-##  Quick Start
+## 로컬 추론(Python)
 
-### 1) 환경 세팅 (권장: 가상환경)
+### Python (Live + Lite)
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-
-# 기본 CPU/GPU 환경
-pip install -r requirements.txt
-
-# (옵션) Intel XPU 환경 — requirements_xpu.txt 사용
-# pip install -r requirements_xpu.txt
+python src/inference/infer_batch_xpu_preproc_fast.py data/normal_road.mp4 --live --live-lite
 ```
 
-### 2) 설정 파일
-config.yaml에서 경로 및 하이퍼파라미터를 조정합니다.
+타이밍 로그(C++ 포맷에 맞춤):
 ```bash
-device: "cpu"            # "cpu" | "cuda" | "xpu"
-epochs: 20
-batch_size: 16
-learning_rate: 0.001
-seq_len: 10
-resize: [224, 224]
-train_data_dir: "./data/train"
-val_data_dir: "./data/val"
-cnn_weight: "./models/best_cnn.pth"
-cls_weight: "./models/best_gru.pth"
+ROAD_VISION_TIMING=1 ROAD_VISION_TIMING_INT=30 \
+  python src/inference/infer_batch_xpu_preproc_fast.py data/normal_road.mp4 --live --live-lite
 ```
 
-## Training (예시)
-
-아래 스크립트와 모듈명은 실제 사용 파일에 맞게 변경 가능합니다.
-
+CPU 강제:
 ```bash
-# 4채널 학습
-python src/trainer/Train_4ch_improved_validation.py \
-  --config config.yaml
-
-# 5채널(npz) 학습
-python src/trainer/Train_5ch_npz.py \
-  --config config.yaml
+ROAD_VISION_CPU=1 python src/inference/infer_batch_xpu_preproc_fast.py data/normal_road.mp4 --live --live-lite
 ```
-
-## Inference (예시)
-
-```bash
-# 4채널 추론
-python src/inference/infer_4ch.py \
-  --config config.yaml --video ./data/sample.mp4
-
-# 5채널(npz) 추론
-python src/inference/Infer_ch5_npz.py \
-  --config config.yaml --npy ./data/sample.npy
-```
-
-## Integration / Demo
-
-### 1. CARLA 연동 추론
-```bash
-python src/integration/carla/carla_comm/4ch_carla/infer_4ch.py \
-  --config config.yaml
-```
-
-### 2. Desktop 통신 모드
-
-**서버 실행**
-```bash
-python src/integration/desktop_comm/server/app.py
-```
-
-**클라이언트 실행**
-```bash
-python src/integration/desktop_comm/client/app.py \
-  --server http://127.0.0.1:5000
-```
-
-**특징**
-- 로컬 또는 원격 서버 주소 지정 가능
-- 실시간 영상 스트리밍 + GRU 분류 결과 수신 및 시각화
-- 배치 크기와 시퀀스 길이 조정 가능
 
 ---
 
-## 3. Output (샘플)
+## 분산 추론(Hailo-8 + 로컬 GRU)
+
+Raspberry Pi + Hailo-8에서 CNN 특징 추출을 수행하고, 로컬에서 GRU+MLP로 분류하는 구조입니다.  
+자세한 실행/구성은 `src/integration/desktop_comm/README.md`를 참고하세요.
+
+---
+
+## CARLA 연동
+
+CARLA 시뮬레이터 기반의 통합/데모 코드가 포함되어 있습니다.
+- CARLA 클라이언트 문서: `src/integration/desktop_comm/client/Carla_client/README.md`
+- CARLA 학습/추론 관련 코드: `src/integration/carla/`
+
+---
+
+## C++ 최적화
+
+C++/LibTorch 파이프라인을 추가하여, 동일 입력(video) 기준으로 FPS가 개선되었습니다.
+
+- 측정 조건(요약): `data/normal_road.mp4`, Lite UI, 30프레임 평균, 첫 구간(warmup) 제외
+- 측정 예시(로그에서 발췌, ms는 30프레임 평균)
+  - Python(XPU): total `13.82~19.47ms` → `fps≈51.4~72.4`
+    - read `0.47~0.59ms`, preproc `3.39~5.37ms`, infer `6.44~9.54ms`, ui `3.52~5.15ms`
+    - warmup(첫 30프레임): total `49.21ms` → `fps≈20.3`
+  - C++ Hybrid(CNN=XPU, CLS=CPU): total `10.30~10.65ms` → `fps≈93.9~97.1`
+    - read `0.41~0.49ms`, preproc `0.72~0.81ms`, infer `4.84~5.02ms`, ui `4.28~4.38ms`
+    - warmup(첫 30프레임): total `43.17ms` → `fps≈23.2`
+  - 개선 배율(대략): `~1.3x ~ 1.8x` (구간/환경에 따라 변동)
+
+C++ 빌드/실행/환경변수/최적화 상세는 `cpp/README.md` 참고.
+
+---
+
+## 학습/통합
+
+- 학습: `src/trainer/` 아래 스크립트 사용 (실험 설정은 상황에 맞게 조정)
+- CARLA/통합: `src/integration/` 아래 모듈 사용
+
+---
+
+## Output
 
 <img width="1653" height="1002" alt="output-1" src="https://github.com/user-attachments/assets/cf7c82c0-7f98-411e-acf9-59f45451d6df" />
 <img width="1371" height="862" alt="output-2" src="https://github.com/user-attachments/assets/1f1b2190-393e-4804-95ed-3b60e9238428" />
